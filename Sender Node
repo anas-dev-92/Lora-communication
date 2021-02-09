@@ -1,0 +1,27 @@
+#include <SPI.h>
+// Add the LoRa library
+#include <LoRa.h>
+#define SensorPin A0
+int sensorValue = -1;
+void setup() {
+ Serial.begin(9600);
+ while (!Serial);
+ Serial.println("LoRa Sender Test");
+ // Initalize the LoRa radio on the shield.
+ // NB: Replace the operating frequency of your shield here.
+ // 915E6 for North America, 868E6 for Europe, 433E6 for Asia
+ if (!LoRa.begin(433E6)) {
+ Serial.println("Starting LoRa failed!");
+ while (1);
+ }
+}
+void loop() {
+ sensorValue = analogRead(SensorPin);
+ Serial.print("Reading is: ");
+ Serial.println(sensorValue);
+ // Transmit the LoRa packet
+ LoRa.beginPacket();
+ LoRa.print(sensorValue);
+ LoRa.endPacket();
+ delay(3000);
+}
